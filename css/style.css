@@ -235,6 +235,173 @@ h1 {
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
+.hearts-board {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  align-items: center;
+}
+
+.hearts-scorebar {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.score-chip {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 0.95rem;
+}
+
+.score-chip.active {
+  border-color: var(--gold);
+  color: var(--gold);
+  font-weight: bold;
+}
+
+.hearts-seats {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.seat-top {
+  display: flex;
+  justify-content: center;
+}
+
+.seat-middle-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  width: 100%;
+}
+
+.trick-area {
+  min-width: 260px;
+  min-height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 10px;
+}
+
+.current-trick {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.trick-slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.trick-tag {
+  font-size: 0.75rem;
+  color: #cfe9d8;
+}
+
+.trick-empty {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.95rem;
+}
+
+.opponent-hand {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.opponent-hand .card-row {
+  display: flex;
+}
+
+.opponent-hand .card {
+  width: 40px;
+  height: 56px;
+  margin-left: -28px;
+  cursor: default;
+}
+
+.opponent-hand .card:first-child {
+  margin-left: 0;
+}
+
+.opponent-hand .seat-label {
+  margin-top: 6px;
+  font-size: 0.85rem;
+  color: #cfe9d8;
+}
+
+.seat-left .opponent-hand .card,
+.seat-right .opponent-hand .card {
+  margin-left: -32px;
+}
+
+.human-hand {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  min-height: var(--card-h);
+}
+
+.human-hand .card:not(:first-child) {
+  margin-left: -34px;
+}
+
+.human-hand .card {
+  transition: transform 0.1s ease;
+}
+
+.human-hand .card.playable:hover {
+  transform: translateY(-10px);
+}
+
+.human-hand .card:not(.playable) {
+  filter: brightness(0.75);
+  cursor: default;
+}
+
+.pass-bar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 10px;
+  padding: 10px 16px;
+}
+
+.pass-bar button {
+  font-size: 1rem;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  background: var(--gold);
+  color: #1b3a24;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.pass-bar button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
 @media (max-width: 700px) {
   :root {
     --card-w: 52px;
