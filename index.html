@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cards for Dad</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header>
+  <h1>Cards for Dad</h1>
+  <nav id="menu">
+    <button data-game="klondike" class="active">Klondike</button>
+    <button data-game="spider">Spider</button>
+    <button data-game="freecell">FreeCell</button>
+  </nav>
+  <div id="controls">
+    <button id="newGameBtn">New Game</button>
+    <button id="undoBtn">Undo</button>
+  </div>
+</header>
+<p id="status" role="status"></p>
+<p class="help">Click a card to pick it up, then click where you want it to go. Click it again to put it back down.</p>
+<main id="game-container"></main>
+
+<script src="js/cards.js"></script>
+<script src="js/klondike.js"></script>
+<script src="js/spider.js"></script>
+<script src="js/freecell.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
