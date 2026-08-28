@@ -1,5 +1,5 @@
 (() => {
-  const engines = { klondike: Klondike, spider: Spider, freecell: FreeCell, hearts: Hearts };
+  const engines = { klondike: Klondike, spider: Spider, freecell: FreeCell, hearts: Hearts, uno: Uno };
   let current = null;
 
   const container = document.getElementById('game-container');

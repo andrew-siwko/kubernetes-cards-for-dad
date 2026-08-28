@@ -402,6 +402,155 @@ h1 {
   cursor: default;
 }
 
+.uno-board {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  align-items: center;
+}
+
+.uno-card {
+  width: var(--card-w);
+  height: var(--card-h);
+  border-radius: 10px;
+  background: #fdfdfd;
+  border: 3px solid #fdfdfd;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.35);
+  cursor: default;
+  user-select: none;
+  position: relative;
+  color: white;
+  font-weight: bold;
+}
+
+.uno-card.face-down {
+  background: repeating-linear-gradient(
+    45deg,
+    #1e5fb0,
+    #1e5fb0 6px,
+    #2c72cc 6px,
+    #2c72cc 12px
+  );
+  border-color: #0d3d78;
+}
+
+.uno-card.uno-red { background: #d1443c; }
+.uno-card.uno-yellow { background: #e0c22b; color: #3a2f00; }
+.uno-card.uno-green { background: #3c9a4c; }
+.uno-card.uno-blue { background: #2f6fd6; }
+.uno-card.uno-wild { background: linear-gradient(135deg, #d1443c 25%, #e0c22b 25% 50%, #3c9a4c 50% 75%, #2f6fd6 75%); }
+
+.uno-card.playable {
+  cursor: pointer;
+  border-color: var(--gold);
+}
+
+.uno-card.playable:hover {
+  transform: translateY(-8px);
+}
+
+.uno-card.selected {
+  outline: 3px solid var(--gold);
+  transform: translateY(-8px);
+}
+
+.uno-corner {
+  position: absolute;
+  font-size: 0.85rem;
+  line-height: 1;
+}
+
+.uno-corner.top { top: 6px; left: 8px; }
+.uno-corner.bottom { bottom: 6px; right: 8px; transform: rotate(180deg); }
+
+.uno-pip {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.8rem;
+}
+
+.uno-table {
+  flex-direction: column;
+}
+
+.uno-piles {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.uno-pile-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.uno-pass-btn {
+  font-size: 1rem;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  background: var(--gold);
+  color: #1b3a24;
+  font-weight: bold;
+  cursor: pointer;
+  height: fit-content;
+}
+
+.uno-color-picker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  background: rgba(0, 0, 0, 0.35);
+  border-radius: 12px;
+  padding: 16px 24px;
+}
+
+.uno-color-title {
+  font-weight: bold;
+  color: var(--gold);
+}
+
+.uno-color-row {
+  display: flex;
+  gap: 12px;
+}
+
+.uno-color-swatch {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px solid #fdfdfd;
+  cursor: pointer;
+}
+
+.opponent-hand .uno-card {
+  width: 40px;
+  height: 56px;
+  margin-left: -28px;
+  border-width: 2px;
+}
+
+.opponent-hand .uno-card:first-child {
+  margin-left: 0;
+}
+
+.human-hand .uno-card:not(:first-child) {
+  margin-left: -34px;
+}
+
+.human-hand .uno-card {
+  transition: transform 0.1s ease;
+}
+
+.human-hand .uno-card:not(.playable) {
+  filter: brightness(0.75);
+}
+
 @media (max-width: 700px) {
   :root {
     --card-w: 52px;
@@ -412,4 +561,6 @@ h1 {
   .corner { font-size: 0.75rem; }
   .tableau-col .card:not(:first-child) { margin-top: -56px; }
   .spider-row .tableau-col .card:not(:first-child) { margin-top: -58px; }
+  .uno-pip { font-size: 1.3rem; }
+  .uno-corner { font-size: 0.65rem; }
 }
