@@ -1,5 +1,6 @@
 const Klondike = (() => {
   let root, state, history, selection, statusEl;
+  let drawCount = 1;
 
   function newState() {
     const deck = shuffle(makeDeck(SUITS));
@@ -18,6 +19,7 @@ const Klondike = (() => {
       waste: [],
       foundations: { '♠': [], '♥': [], '♦': [], '♣': [] },
       tableau,
+      moves: 0,
     };
   }
 
@@ -35,6 +37,12 @@ const Klondike = (() => {
     return pile[startIdx] && pile[startIdx].faceUp;
   }
 
+  function selectable(pile, col, idx) {
+    if (pile === 'waste') return idx === state.waste.length - 1;
+    if (pile === 'tableau') return isValidRun(state.tableau[col], idx);
+    return false;
+  }
+
   function clearSelection() {
     selection = null;
   }
@@ -46,23 +54,32 @@ const Klondike = (() => {
   function checkWin() {
     const total = Object.values(state.foundations).reduce((n, f) => n + f.length, 0);
     if (total === 52) {
-      setStatus('You win! 🎉');
+      setStatus(`You win in ${state.moves} moves! 🎉`);
       return true;
     }
     return false;
   }
 
+  function toggleDraw() {
+    drawCount = drawCount === 1 ? 3 : 1;
+    render();
+  }
+
   function drawStock() {
+    if (state.stock.length === 0 && state.waste.length === 0) return;
     save();
     if (state.stock.length === 0) {
-      if (state.waste.length === 0) return;
       state.stock = state.waste.reverse().map((c) => ({ ...c, faceUp: false }));
       state.waste = [];
     } else {
-      const card = state.stock.pop();
-      card.faceUp = true;
-      state.waste.push(card);
+      const n = Math.min(drawCount, state.stock.length);
+      for (let i = 0; i < n; i++) {
+        const card = state.stock.pop();
+        card.faceUp = true;
+        state.waste.push(card);
+      }
     }
+    state.moves++;
     clearSelection();
     render();
   }
@@ -97,6 +114,7 @@ const Klondike = (() => {
     source.pop();
     state.foundations[card.suit].push(card);
     if (pile === 'tableau') flipTopIfNeeded(col);
+    state.moves++;
     clearSelection();
     render();
     checkWin();
@@ -114,6 +132,7 @@ const Klondike = (() => {
     source.splice(idx);
     state.tableau[destCol].push(...run);
     if (pile === 'tableau') flipTopIfNeeded(col);
+    state.moves++;
     clearSelection();
     render();
     return true;
@@ -128,10 +147,47 @@ const Klondike = (() => {
     source.pop();
     state.foundations[card.suit].push(card);
     if (pile === 'tableau') flipTopIfNeeded(col);
+    state.moves++;
     clearSelection();
     render();
     checkWin();
     return true;
+  }
+
+  function attachDrag(el, pile, col, idx) {
+    el.draggable = true;
+    el.addEventListener('dragstart', (e) => {
+      if (!selectable(pile, col, idx)) {
+        e.preventDefault();
+        return;
+      }
+      selection = { pile, col, idx };
+      el.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+      try { e.dataTransfer.setData('text/plain', ''); } catch (err) { /* Safari */ }
+    });
+    el.addEventListener('dragend', () => {
+      el.classList.remove('dragging');
+      if (selection && selection.pile === pile && selection.col === col && selection.idx === idx) {
+        clearSelection();
+        render();
+      }
+    });
+  }
+
+  function attachDropZone(el, onDrop) {
+    el.addEventListener('dragover', (e) => {
+      if (!selection) return;
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      el.classList.add('drag-over');
+    });
+    el.addEventListener('dragleave', () => el.classList.remove('drag-over'));
+    el.addEventListener('drop', (e) => {
+      e.preventDefault();
+      el.classList.remove('drag-over');
+      onDrop();
+    });
   }
 
   function onCardClick(pile, col, idx, evt) {
@@ -193,6 +249,20 @@ const Klondike = (() => {
     const board = document.createElement('div');
     board.className = 'klondike-board';
 
+    const toolbar = document.createElement('div');
+    toolbar.className = 'klondike-toolbar';
+    const drawBtn = document.createElement('button');
+    drawBtn.type = 'button';
+    drawBtn.className = 'toolbar-btn';
+    drawBtn.textContent = `Draw: ${drawCount}`;
+    drawBtn.addEventListener('click', toggleDraw);
+    toolbar.appendChild(drawBtn);
+    const movesEl = document.createElement('div');
+    movesEl.className = 'moves-counter';
+    movesEl.textContent = `Moves: ${state.moves}`;
+    toolbar.appendChild(movesEl);
+    board.appendChild(toolbar);
+
     const top = document.createElement('div');
     top.className = 'row top-row';
 
@@ -210,11 +280,22 @@ const Klondike = (() => {
     const wastePile = document.createElement('div');
     wastePile.className = 'pile waste';
     if (state.waste.length) {
-      const idx = state.waste.length - 1;
-      const card = state.waste[idx];
-      const el = cardEl(card, selection && selection.pile === 'waste' && selection.idx === idx);
-      el.addEventListener('click', (e) => onCardClick('waste', -1, idx, e));
-      wastePile.appendChild(el);
+      const fan = document.createElement('div');
+      fan.className = 'waste-fan';
+      const start = Math.max(0, state.waste.length - Math.min(drawCount, 3));
+      for (let idx = start; idx < state.waste.length; idx++) {
+        const card = state.waste[idx];
+        const isTop = idx === state.waste.length - 1;
+        const el = cardEl(card, isTop && selection && selection.pile === 'waste' && selection.idx === idx);
+        if (isTop) {
+          el.addEventListener('click', (e) => onCardClick('waste', -1, idx, e));
+          attachDrag(el, 'waste', -1, idx);
+        } else {
+          el.style.cursor = 'default';
+        }
+        fan.appendChild(el);
+      }
+      wastePile.appendChild(fan);
     } else {
       wastePile.appendChild(emptySlotEl(''));
     }
@@ -236,6 +317,7 @@ const Klondike = (() => {
         f.appendChild(slot);
       }
       f.addEventListener('click', onFoundationClick);
+      attachDropZone(f, onFoundationClick);
       top.appendChild(f);
     }
     board.appendChild(top);
@@ -258,6 +340,7 @@ const Klondike = (() => {
               e.stopPropagation();
               onCardClick('tableau', col, idx, e);
             });
+            attachDrag(el, 'tableau', col, idx);
           }
           colEl.appendChild(el);
         });
@@ -265,6 +348,7 @@ const Klondike = (() => {
           if (selection) onEmptyTableauClick(col);
         });
       }
+      attachDropZone(colEl, () => onEmptyTableauClick(col));
       tableauRow.appendChild(colEl);
     });
     board.appendChild(tableauRow);

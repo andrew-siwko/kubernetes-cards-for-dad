@@ -223,6 +223,50 @@ h1 {
   margin-top: 4px;
 }
 
+.klondike-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.toolbar-btn {
+  font-size: 0.95rem;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  background: #2c8a52;
+  color: white;
+  cursor: pointer;
+}
+
+.toolbar-btn:hover {
+  background: #34a462;
+}
+
+.moves-counter {
+  font-size: 0.95rem;
+  color: #cfe9d8;
+}
+
+.waste-fan {
+  display: flex;
+}
+
+.waste-fan .card:not(:first-child) {
+  margin-left: -50px;
+}
+
+.card.dragging {
+  opacity: 0.4;
+}
+
+.pile.drag-over {
+  outline: 3px dashed var(--gold);
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
 .completed-count {
   width: auto;
   padding: 0 14px;
@@ -561,6 +605,7 @@ h1 {
   .corner { font-size: 0.75rem; }
   .tableau-col .card:not(:first-child) { margin-top: -56px; }
   .spider-row .tableau-col .card:not(:first-child) { margin-top: -58px; }
+  .waste-fan .card:not(:first-child) { margin-left: -34px; }
   .uno-pip { font-size: 1.3rem; }
   .uno-corner { font-size: 0.65rem; }
 }
